@@ -15,5 +15,11 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     "@nuxt/image",
-  ]
+    "nuxt-svgo",
+  ],
+
+  svgo: {
+    componentPrefix: 'i',
+    defaultImport: 'component',
+  },
 });
