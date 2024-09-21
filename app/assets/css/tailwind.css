@@ -7,9 +7,12 @@
     --chestnut: 183 78 78;
     --salt-box: 93 79 100;
     --rhino: 44 63 88;
+    --white: 255 255 255;
+    --black: 0 0 0;
+    --grey-accent: 125 125 125;
 
-    --background: var(--rhino);
-    --foreground: 255 255 255;
+    --background: var(--white);
+    --foreground: var(--black);
  
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
@@ -23,14 +26,14 @@
     --border: 255 255 255;
     --input: 255 255 255;
  
-    --primary: var(--rhino);
+    --primary: var(--white);
     --primary-foreground: 222.2 47.4% 11.2%;
  
-    --secondary: var(--chestnut);
+    --secondary: var(--black);
     --secondary-foreground: 210 40% 98%;
  
  
-    --accent: var(--supernova);
+    --accent: var(--grey-accent);
     --accent-foreground: 210 40% 98%;
  
     --destructive: 0 62.8% 30.6%;

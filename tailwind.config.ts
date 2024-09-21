@@ -22,6 +22,7 @@ export default {
         rhino: "rgb(var(--rhino))",
         chestnut: "rgb(var(--chestnut))",
         supernova: "rgb(var(--supernova))",
+        greyAccent: "rgb(var(--grey-accent))",
         primary: {
           DEFAULT: "rgb(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
@@ -72,7 +73,7 @@ export default {
             paddingLeft: '0.5rem',
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: theme('colors.chestnut'),
+            backgroundColor: theme('colors.greyAccent'),
             borderRadius: theme('borderRadius.lg'),
           }
         },
@@ -86,7 +87,7 @@ export default {
             height: '0.5rem',
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: theme('colors.chestnut'),
+            backgroundColor: theme('colors.greyAccent'),
             borderRadius: theme('borderRadius.lg'),
           }
         }
