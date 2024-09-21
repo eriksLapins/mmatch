@@ -8,13 +8,15 @@
         <UiLink
           outlined
           class="w-40 justify-center"
-          href="/login"
+          rel="external"
+          :href="`${$config.public.appUrl}/login`"
         >
           Login
         </UiLink>
         <UiLink
           class="w-40 justify-center"
-          href="/register"
+          rel="external"
+          :href="`${$config.public.appUrl}/register`"
         >
           Register
         </UiLink>

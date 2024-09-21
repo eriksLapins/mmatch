@@ -4,24 +4,45 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@nuxtjs/tailwindcss':
+      specifier: ^6.12.1
+      version: 6.12.1
+    '@vueuse/core':
+      specifier: ^10.11.0
+      version: 10.11.1
+    nuxt:
+      specifier: ^3.13.2
+      version: 3.13.2
+    tailwindcss:
+      specifier: ^3.4.4
+      version: 3.4.12
+    vue:
+      specifier: latest
+      version: 3.5.7
+    vue-router:
+      specifier: latest
+      version: 4.4.5
+
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       '@nuxt/eslint-config':
         specifier: ^0.3.13
         version: 0.3.13(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2)
-      '@nuxt/image':
-        specifier: ^1.7.0
-        version: 1.8.0(ioredis@5.4.1)(magicast@0.3.5)(rollup@4.22.2)
+      '@nuxt/kit':
+        specifier: ^3.13.2
+        version: 3.13.2(magicast@0.3.5)(rollup@4.22.2)
       '@nuxtjs/tailwindcss':
-        specifier: ^6.12.1
+        specifier: 'catalog:'
         version: 6.12.1(magicast@0.3.5)(rollup@4.22.2)
       '@stylistic/eslint-plugin':
         specifier: ^2.1.0
         version: 2.8.0(eslint@9.11.0(jiti@1.21.6))(typescript@5.6.2)
       '@vueuse/core':
-        specifier: ^10.11.0
+        specifier: 'catalog:'
         version: 10.11.1(vue@3.5.7(typescript@5.6.2))
       eslint:
         specifier: ^9.5.0
@@ -30,19 +51,100 @@ importers:
         specifier: ^9.26.0
         version: 9.28.0(eslint@9.11.0(jiti@1.21.6))
       nuxt:
-        specifier: ^3.13.0
+        specifier: 'catalog:'
         version: 3.13.2(@parcel/watcher@2.4.1)(@types/node@22.5.5)(eslint@9.11.0(jiti@1.21.6))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.22.2)(terser@5.33.0)(typescript@5.6.2)(vite@5.4.7(@types/node@22.5.5)(terser@5.33.0))
       nuxt-svgo:
         specifier: ^4.0.6
         version: 4.0.6(magicast@0.3.5)(rollup@4.22.2)(vue@3.5.7(typescript@5.6.2))
       tailwindcss:
-        specifier: ^3.4.4
+        specifier: 'catalog:'
         version: 3.4.12
       vue:
-        specifier: latest
+        specifier: 'catalog:'
         version: 3.5.7(typescript@5.6.2)
       vue-router:
-        specifier: latest
+        specifier: 'catalog:'
+        version: 4.4.5(vue@3.5.7(typescript@5.6.2))
+
+  packages/app:
+    devDependencies:
+      '@mmatch/common':
+        specifier: workspace:*
+        version: link:../common
+      '@nuxt/image':
+        specifier: ^1.7.0
+        version: 1.8.0(ioredis@5.4.1)(magicast@0.3.5)(rollup@4.22.2)
+      '@nuxtjs/tailwindcss':
+        specifier: 'catalog:'
+        version: 6.12.1(magicast@0.3.5)(rollup@4.22.2)
+      '@vueuse/core':
+        specifier: 'catalog:'
+        version: 10.11.1(vue@3.5.7(typescript@5.6.2))
+      nuxt:
+        specifier: 'catalog:'
+        version: 3.13.2(@parcel/watcher@2.4.1)(@types/node@22.5.5)(eslint@9.11.0(jiti@1.21.6))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.22.2)(terser@5.33.0)(typescript@5.6.2)(vite@5.4.7(@types/node@22.5.5)(terser@5.33.0))
+      nuxt-svgo:
+        specifier: ^4.0.6
+        version: 4.0.6(magicast@0.3.5)(rollup@4.22.2)(vue@3.5.7(typescript@5.6.2))
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 3.4.12
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.7(typescript@5.6.2)
+      vue-router:
+        specifier: 'catalog:'
+        version: 4.4.5(vue@3.5.7(typescript@5.6.2))
+
+  packages/common:
+    dependencies:
+      '@nuxtjs/tailwindcss':
+        specifier: 'catalog:'
+        version: 6.12.1(magicast@0.3.5)(rollup@4.22.2)
+      '@vueuse/core':
+        specifier: 'catalog:'
+        version: 10.11.1(vue@3.5.7(typescript@5.6.2))
+      nuxt:
+        specifier: 'catalog:'
+        version: 3.13.2(@parcel/watcher@2.4.1)(@types/node@22.5.5)(eslint@9.11.0(jiti@1.21.6))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.22.2)(terser@5.33.0)(typescript@5.6.2)(vite@5.4.7(@types/node@22.5.5)(terser@5.33.0))
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 3.4.12
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.7(typescript@5.6.2)
+      vue-router:
+        specifier: 'catalog:'
+        version: 4.4.5(vue@3.5.7(typescript@5.6.2))
+
+  packages/site:
+    devDependencies:
+      '@mmatch/common':
+        specifier: workspace:*
+        version: link:../common
+      '@nuxt/image':
+        specifier: ^1.7.0
+        version: 1.8.0(ioredis@5.4.1)(magicast@0.3.5)(rollup@4.22.2)
+      '@nuxtjs/tailwindcss':
+        specifier: 'catalog:'
+        version: 6.12.1(magicast@0.3.5)(rollup@4.22.2)
+      '@vueuse/core':
+        specifier: 'catalog:'
+        version: 10.11.1(vue@3.5.7(typescript@5.6.2))
+      nuxt:
+        specifier: 'catalog:'
+        version: 3.13.2(@parcel/watcher@2.4.1)(@types/node@22.5.5)(eslint@9.11.0(jiti@1.21.6))(ioredis@5.4.1)(magicast@0.3.5)(optionator@0.9.4)(rollup@4.22.2)(terser@5.33.0)(typescript@5.6.2)(vite@5.4.7(@types/node@22.5.5)(terser@5.33.0))
+      nuxt-svgo:
+        specifier: ^4.0.6
+        version: 4.0.6(magicast@0.3.5)(rollup@4.22.2)(vue@3.5.7(typescript@5.6.2))
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 3.4.12
+      vue:
+        specifier: 'catalog:'
+        version: 3.5.7(typescript@5.6.2)
+      vue-router:
+        specifier: 'catalog:'
         version: 4.4.5(vue@3.5.7(typescript@5.6.2))
 
 packages:
