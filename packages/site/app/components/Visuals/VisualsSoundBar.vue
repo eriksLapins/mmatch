@@ -1,11 +1,30 @@
 <template>
   <div
     :style="{
-      height: actualHeight,
-      width: width
+      height: `${maxHeight}px`,
+      width: `${width}px`
     }"
-    class="bg-secondary"
-  />
+    class="flex"
+    :class="{
+      'items-end': position === 'top'
+    }"
+  >
+    <div
+      :style="{
+        height: `${height}px`,
+        width: `${width}px`
+      }"
+      class="flex"
+      :class="{
+        'items-end': position === 'top'
+      }"
+    >
+      <div
+        class="animate-grow shrink-0 w-full h-full"
+        :class="backgroundClass ?? 'bg-accent'"
+      />
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -13,19 +32,11 @@ defineOptions({
   name: 'VisualsSoundBar'
 });
 
-const props = defineProps<{
+defineProps<{
   width: number;
   height: number;
+  maxHeight: number;
   position: 'top' | 'bottom';
+  backgroundClass?: string;
 }>();
-const actualHeight = ref<number>(0);
-
-onMounted(() => {
-  const numbers = new Array(props.height).map((_, i) => i);
-  for (const number of numbers) {
-    setTimeout(() => {
-      actualHeight.value = number;
-    }, 10);
-  }
-});
 </script>

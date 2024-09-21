@@ -58,6 +58,20 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      keyframes: {
+        grow: {
+          '0%': { height: '0' },
+          '100%': { height: '100%' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '100%' }
+        }
+      },
+      animation: {
+        grow: 'grow 1s normal ease-in-out',
+        fadeIn: 'fadeIn 1s ease-in-out'
+      }
     },
   },
   plugins: [
