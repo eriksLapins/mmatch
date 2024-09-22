@@ -15,6 +15,7 @@ export type User = {
   street: string;
   houseNumber: string;
   apartment: string | undefined;
+  password: string;
 };
 
 export type Band = {

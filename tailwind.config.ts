@@ -23,6 +23,7 @@ export default {
         chestnut: "rgb(var(--chestnut))",
         supernova: "rgb(var(--supernova))",
         greyAccent: "rgb(var(--grey-accent))",
+        disabled: 'rgb(var(--accent))',
         primary: {
           DEFAULT: "rgb(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
