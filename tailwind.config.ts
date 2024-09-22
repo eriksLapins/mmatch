@@ -7,7 +7,7 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "2rem",
+      padding: "1rem",
       screens: {
         "2xl": "1400px",
       },
@@ -59,17 +59,17 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
-        grow: {
+        growing: {
           '0%': { height: '0' },
           '100%': { height: '100%' },
         },
         fadeIn: {
           '0%': { opacity: '0' },
           '100%': { opacity: '100%' }
-        }
+        },
       },
       animation: {
-        grow: 'grow 1s normal ease-in-out',
+        growing: 'growing',
         fadeIn: 'fadeIn 1s ease-in-out'
       }
     },
