@@ -37,6 +37,7 @@ export default defineNuxtConfig({
   svgo: {
     componentPrefix: 'i',
     defaultImport: 'component',
+    autoImportPath: '~/assets/icons/'
   },
   tailwindcss: {
     configPath: '../../tailwind.config.ts',
