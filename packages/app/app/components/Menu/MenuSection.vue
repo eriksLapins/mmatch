@@ -32,8 +32,17 @@
             <div class="w-full flex gap-2 flex-nowrap">
               <NuxtLink
                 :href="link.link" 
-                class="px-3 py-2 font-semibold text-black w-full"
+                class="px-3 py-2 font-semibold text-black w-full flex gap-2"
               >
+                <div
+                  v-if="link.prependIcon"
+                  class="flex w-max justify-center items-center"
+                >
+                  <ISearch
+                    v-if="link.prependIcon === 'search'"
+                    class="size-4"
+                  />
+                </div>
                 {{ link.title }}
               </NuxtLink>
               <button
@@ -42,7 +51,7 @@
                 @click="openDropdown(index)"
               >
                 <IArrowDown
-                  class="size-8 transition-transform duration-100"
+                  class="size-8 transition-transform duration-100 mx-2"
                   :class="{
                     'rotate-180': openedDropdown === index
                   }"
@@ -69,7 +78,7 @@
                   v-for="childLink in link.links"
                   :key="childLink.title"
                   class="
-                    min-h-11
+                    min-h-11 pl-3
                     flex items-center justify-start
                     bg-gray-100
                     hover:bg-gray-200 has-[.router-link-exact-active]:bg-gray-200
@@ -113,7 +122,8 @@ defineOptions({
 type MenuLink = {
   link: string,
   title: string,
-  links?: MenuLink[]
+  links?: MenuLink[],
+  prependIcon?: 'search',
 };
 
 const isExpanded = ref(false);
@@ -148,6 +158,12 @@ const links = computed((): MenuLink[] => {
     {
       link: '/chats',
       title: 'Chats',
+    },
+    
+    {
+      link: '/explore',
+      title: 'Explore',
+      prependIcon: 'search'
     },
   ];
 });
