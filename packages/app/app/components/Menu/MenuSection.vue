@@ -13,8 +13,44 @@
         'visible delay-200': isExpanded,
       }"
     >
-      <div class="h-14 p-3  flex justify-start items-center">
-        Hello title
+      <div
+        class="h-14 p-3 flex justify-start items-center gap-2"
+      >
+        <span>{{ currentUser.name }} {{ currentUser.lastname }}</span>
+        <div
+          ref="menuHeadingRef"
+          class="relative"
+        >
+          <button
+            class="rounded-sm w-max px-1 py-0.5 text-sm leading-none bg-green-200 inline-flex"
+            @click="handleTypeClick"
+          >
+            {{ activeType }} <IArrowDown
+              v-if="currentUser.types.length > 1"
+              class="size-4 transition-transform duration-200"
+              :class="{
+                'rotate-180': typeDropdownOpen
+              }"
+            />
+          </button>
+          <div
+            v-if="currentUser.types.length > 1 && typeDropdownOpen"
+            class="absolute top-6 p-1 bg-white rounded-lg shadow-md mt-1"
+          >
+            <button
+              v-for="type in currentUser.types"
+              :key="type"
+              class="w-full h-max text-sm hover:underline"
+              @click="navigateTo({query: {
+                userType: type
+              }}, {
+                external: true
+              })"
+            >
+              {{ type }}
+            </button>
+          </div>
+        </div>
       </div>
       <nav class="py-3">
         <ul class="">
@@ -115,6 +151,9 @@
 </template>
 
 <script setup lang="ts">
+import { UserTypes, type User } from '~/types';
+import { onClickOutside } from '@vueuse/core';
+
 defineOptions({
   name: 'MenuSection'
 });
@@ -127,7 +166,30 @@ type MenuLink = {
 };
 
 const isExpanded = ref(false);
+const route = useRoute();
 const openedDropdown = ref<number | undefined>();
+const menuHeadingRef = ref<HTMLDivElement>();
+onClickOutside(menuHeadingRef, () => {
+  typeDropdownOpen.value = false;
+});
+
+const currentUser = computed((): User => ({ 
+  name: 'Some',
+  lastname: 'Dude',
+  password: '',
+  city: '',
+  apartment: '',
+  country: '',
+  email: '',
+  houseNumber: '',
+  phone: '',
+  phoneCountry: '',
+  street: '',
+  types: [UserTypes.Musician, UserTypes.Manager]
+}));
+
+const activeType = ref(route.query.userType as UserTypes ?? currentUser.value.types[0]);
+
 function openDropdown(index: number) {
   if (openedDropdown.value === index) {
     openedDropdown.value = undefined;
@@ -135,6 +197,21 @@ function openDropdown(index: number) {
     openedDropdown.value = index;
   }
 }
+
+const typeDropdownOpen = ref(false);
+
+function handleTypeClick() {
+  if (typeDropdownOpen.value === true) {
+    typeDropdownOpen.value = false;
+    return;
+  }
+  if (currentUser.value.types.length === 1) {
+    return;
+  }
+  typeDropdownOpen.value = true;
+
+}
+
 const links = computed((): MenuLink[] => {
   return [
     {

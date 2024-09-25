@@ -4,6 +4,12 @@ export type YearFromTo<T> = {
   item: T,
 };
 
+export enum UserTypes {
+  Musician = 'Musician',
+  Manager = 'Manager',
+  Explorer = 'Explorer'
+}
+
 export type User = {
   name: string;
   lastname: string;
@@ -16,6 +22,7 @@ export type User = {
   houseNumber: string;
   apartment: string | undefined;
   password: string;
+  types: UserTypes[];
 };
 
 export type Band = {
