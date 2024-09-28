@@ -59,5 +59,5 @@ type EventTargetCustom = EventTarget & {
   value: string | undefined
 } | null;
 
-const modelValue = defineModel<string | undefined>('modelValue');
+const modelValue = defineModel<string | undefined | null>('modelValue');
 </script>

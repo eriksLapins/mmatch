@@ -1,16 +1,17 @@
 import type { Band, Manager, Musician, User } from "~/types";
 
 export const defaultUser: User = {
+  id: '',
   name: '',
   lastname: '',
   email: '',
   phone: '',
-  phonePrefix: '',
+  phone_prefix: '',
   country: '',
   city: '',
   street: '',
-  houseNumber: '',
-  apartment: undefined,
+  house_number: '',
+  apartment: null,
   types: [],
   description: '',
   password: '',
@@ -20,31 +21,30 @@ export const defaultUser: User = {
 export const defaultBand: Band = {
   name: '',
   description: '',
-  countryOfOrigin: '',
-  establishedIn: null as unknown as number,
+  country_of_origin: '',
+  established_in: null as unknown as number,
   instruments: [],
   links: [],
   managers: [],
   members: [],
-  musicStyles: [],
-  searchingFor: [],
+  music_styles: [],
+  searching_for: [],
 };
 
 export const defaultMusician: Musician = {
-  ...defaultUser,
-  stageName: '',
+  user: defaultUser,
+  stage_name: '',
   bands: [],
   skills: [],
-  description: '',
   links: [],
   managers: [],
-  openToCollabWith: [],
+  open_to_collab_with: [],
 };
 
 export const defaultManager: Manager = {
-  ...defaultUser,
-  stageName: '',
+  user: defaultUser,
+  stage_name: '',
   commission: [null as unknown as number, null as unknown as number],
   bands: [],
-  categoriesInterestedIn: [],
+  categories_interested_in: [],
 };

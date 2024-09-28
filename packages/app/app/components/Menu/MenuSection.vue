@@ -151,7 +151,7 @@
 </template>
 
 <script setup lang="ts">
-import { UserTypes, type User } from '~/types';
+import { type UserTypes, type User } from '~/types';
 import { onClickOutside } from '@vueuse/core';
 
 defineOptions({
@@ -174,6 +174,7 @@ onClickOutside(menuHeadingRef, () => {
 });
 
 const currentUser = computed((): User => ({ 
+  id: '',
   name: 'Some',
   lastname: 'Dude',
   password: '',
@@ -181,11 +182,11 @@ const currentUser = computed((): User => ({
   apartment: '',
   country: '',
   email: '',
-  houseNumber: '',
+  house_number: '',
   phone: '',
-  phonePrefix: '',
+  phone_prefix: '',
   street: '',
-  types: [UserTypes.Musician, UserTypes.Manager],
+  types: ["Musician", "Manager"],
   description: '',
 }));
 

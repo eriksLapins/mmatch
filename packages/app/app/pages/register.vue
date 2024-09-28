@@ -16,7 +16,7 @@
       <UiInputPhone
         id="phone"
         v-model:phone="form.phone"
-        v-model:prefix="form.phonePrefix"
+        v-model:prefix="form.phone_prefix"
         placeholder="Phone"
         autocomplete="phone"
         :errors="errors.phone"
@@ -96,11 +96,11 @@
         />
         <UiInput
           id="house-number"
-          v-model="form.houseNumber"
+          v-model="form.house_number"
           placeholder="House Number"
           autocomplete="house-number"
-          :errors="errors.houseNumber"
-          @input="errors.houseNumber = undefined"
+          :errors="errors.house_number"
+          @input="errors.house_number = undefined"
         />
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -135,6 +135,7 @@ definePageMeta({
 });
 
 const form = ref<User>({
+  id: '',
   email: '',
   password: '',
   name: '',
@@ -143,14 +144,15 @@ const form = ref<User>({
   country: '',
   city: '',
   street: '',
-  houseNumber: '',
-  apartment: undefined,
+  house_number: '',
+  apartment: null,
   phone: '',
-  phonePrefix: '',
+  phone_prefix: '',
   types: []
 });
 
 const errors = ref<Record<keyof User, string | undefined>>({
+  id: undefined,
   email: undefined,
   password: undefined,
   name: undefined,
@@ -159,10 +161,10 @@ const errors = ref<Record<keyof User, string | undefined>>({
   city: undefined,
   country: undefined,
   street: undefined,
-  houseNumber: undefined,
+  house_number: undefined,
   apartment: undefined,
   phone: undefined,
-  phonePrefix: undefined,
+  phone_prefix: undefined,
   types: undefined,
 });
 

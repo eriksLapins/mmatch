@@ -1,7 +1,8 @@
 use std::fmt::Display;
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
 pub struct YearFromTo<T> {
     pub from: String,
     pub to: String,
@@ -9,7 +10,7 @@ pub struct YearFromTo<T> {
 }
 
 
-#[derive(Clone, Copy, Debug, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, TS)]
 pub enum UserTypes {
     Musician,
     Manager,
@@ -22,7 +23,8 @@ impl Display for UserTypes {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct User {
     pub id: String,
     pub name: String,
@@ -95,7 +97,7 @@ impl User {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
 pub struct Skills {
     from: String,
     to: String,
@@ -103,7 +105,8 @@ pub struct Skills {
     name: String,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct Musician {
     user: User,
     stage_name: String,
@@ -149,7 +152,8 @@ impl Musician {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct Manager {
     user: User,
     stage_name: String,
@@ -187,13 +191,14 @@ impl Manager {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
 pub struct MusicianWithPurpose {
     musician: Musician,
     main_purpose: String,
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct Band {
     name: String,
     established_in: i16,
