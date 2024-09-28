@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@nuxt/image": "^1.7.0",
-    "nuxt-svgo": "^4.0.6",
+    "nuxt-svgo": "catalog:",
     "@mmatch/common": "workspace:*",
     "nuxt": "catalog:",
     "@vueuse/core": "catalog:",

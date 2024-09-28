@@ -183,9 +183,10 @@ const currentUser = computed((): User => ({
   email: '',
   houseNumber: '',
   phone: '',
-  phoneCountry: '',
+  phonePrefix: '',
   street: '',
-  types: [UserTypes.Musician, UserTypes.Manager]
+  types: [UserTypes.Musician, UserTypes.Manager],
+  description: '',
 }));
 
 const activeType = ref(route.query.userType as UserTypes ?? currentUser.value.types[0]);

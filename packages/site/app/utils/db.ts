@@ -5,12 +5,14 @@ export const defaultUser: User = {
   lastname: '',
   email: '',
   phone: '',
-  phoneCountry: '',
+  phonePrefix: '',
   country: '',
   city: '',
   street: '',
   houseNumber: '',
   apartment: undefined,
+  description: '',
+  password: '',
 };
 
 

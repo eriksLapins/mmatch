@@ -1,23 +1,45 @@
 <template>
   <div class="container">
-    <div class="flex flex-col gap-4 max-w-[500px] mx-auto my-10 md:my-20">
+    <form
+      class="flex flex-col gap-2 max-w-[500px] mx-auto my-10 md:my-20"
+      @submit.prevent="onSubmit"
+    >
       <UiInput
         id="email"
         v-model="form.email"
         type="email"
         placeholder="E-mail"
         autocomplete="email"
-        :errors="!!errors.email"
+        :errors="errors.email"
         @input="errors.email = undefined"
+      />
+      <UiInputPhone
+        id="phone"
+        v-model:phone="form.phone"
+        v-model:prefix="form.phonePrefix"
+        placeholder="Phone"
+        autocomplete="phone"
+        :errors="errors.phone"
+        @input="errors.phone = undefined"
       />
       <UiInput
         id="password"
         v-model="form.password"
         type="password"
         placeholder="Password"
-        autocomplete="password"
-        :errors="!!errors.password"
+        autocomplete="off"
+        :errors="failedRepeat ?? errors.password"
         @input="errors.password = undefined"
+        @blur="checkPasswordsMatch"
+      />
+      <UiInput
+        id="password-repeat"
+        v-model="repeatPassword"
+        type="password"
+        placeholder="Repeat Password"
+        autocomplete="off"
+        :errors="failedRepeat"
+        @blur="checkPasswordsMatch"
       />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <UiInput
@@ -25,7 +47,7 @@
           v-model="form.name"
           placeholder="Name"
           autocomplete="name"
-          :errors="!!errors.name"
+          :errors="errors.name"
           @input="errors.name = undefined"
         />
         <UiInput
@@ -33,24 +55,16 @@
           v-model="form.lastname"
           placeholder="Lastname"
           autocomplete="lastname"
-          :errors="!!errors.lastname"
+          :errors="errors.lastname"
           @input="errors.lastname = undefined"
         />
       </div>
-      <UiInput
-        id="stagename"
-        v-model="form.stageName"
-        placeholder="Stagename"
-        autocomplete="stagename"
-        :errors="!!errors.stageName"
-        @input="errors.stageName = undefined"
-      />
       <UiInput
         id="description"
         v-model="form.description"
         placeholder="Description"
         autocomplete="description"
-        :errors="!!errors.description"
+        :errors="errors.description"
         @input="errors.description = undefined"
       />
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -59,7 +73,7 @@
           v-model="form.country"
           placeholder="Country"
           autocomplete="country"
-          :errors="!!errors.country"
+          :errors="errors.country"
           @input="errors.country = undefined"
         />
         <UiInput
@@ -67,7 +81,7 @@
           v-model="form.city"
           placeholder="City"
           autocomplete="city"
-          :errors="!!errors.city"
+          :errors="errors.city"
           @input="errors.city = undefined"
         />
       </div>
@@ -77,7 +91,7 @@
           v-model="form.street"
           placeholder="Street"
           autocomplete="street"
-          :errors="!!errors.street"
+          :errors="errors.street"
           @input="errors.street = undefined"
         />
         <UiInput
@@ -85,7 +99,7 @@
           v-model="form.houseNumber"
           placeholder="House Number"
           autocomplete="house-number"
-          :errors="!!errors.houseNumber"
+          :errors="errors.houseNumber"
           @input="errors.houseNumber = undefined"
         />
       </div>
@@ -95,7 +109,7 @@
           v-model="form.apartment"
           placeholder="Apartment"
           autocomplete="apartment"
-          :errors="!!errors.apartment"
+          :errors="errors.apartment"
           @input="errors.apartment = undefined"
         />
       </div>
@@ -103,62 +117,80 @@
         type="submit"
         class="w-max"
       >
-        Login
+        Register
       </UiButton>
-    </div>
+    </form>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Manager, Musician } from '~/types';
+import type { User } from '~/types';
 
 defineOptions({
   name: 'RegisterPage'
 });
 
-const form = ref<Musician & Manager>({
+definePageMeta({
+  layout: 'clean'
+});
+
+const form = ref<User>({
   email: '',
   password: '',
   name: '',
   lastname: '',
-  stageName: '',
   description: '',
   country: '',
   city: '',
   street: '',
   houseNumber: '',
   apartment: undefined,
-  bands: [],
-  skills: [],
-  commission: [] as unknown as [number, number],
-  links: [],
-  managers: [],
   phone: '',
-  phoneCountry: '',
-  openToCollabWith: [],
-  categoriesInterestedIn: [],
+  phonePrefix: '',
+  types: []
 });
 
-const errors = ref<Record<keyof (Musician & Manager), string | undefined>>({
+const errors = ref<Record<keyof User, string | undefined>>({
   email: undefined,
   password: undefined,
   name: undefined,
   lastname: undefined,
-  stageName: undefined,
   description: undefined,
   city: undefined,
   country: undefined,
   street: undefined,
   houseNumber: undefined,
   apartment: undefined,
-  bands: undefined,
-  skills: undefined,
-  commission: undefined,
-  links: undefined,
-  managers: undefined,
   phone: undefined,
-  phoneCountry: undefined,
-  openToCollabWith: undefined,
-  categoriesInterestedIn: undefined,
+  phonePrefix: undefined,
+  types: undefined,
 });
+
+const repeatPassword = ref('');
+const failedRepeat = ref<string>();
+
+function checkPasswordsMatch() {
+  if (repeatPassword.value === '' || form.value.password === '') {
+    failedRepeat.value = undefined;
+    return;
+  }
+  if (repeatPassword.value === form.value.password) {
+    failedRepeat.value = undefined;
+    return;
+  }
+  failedRepeat.value = 'Paswords do not match';
+}
+
+function onSubmit() {
+  if (failedRepeat.value || repeatPassword.value !== form.value.password) {
+    failedRepeat.value = 'Password do not match';
+    return;
+  }
+  try {
+    console.log(form.value);
+    // return navigateTo('/', { external: true });
+  } catch (e) {
+    console.log(e);
+  }
+}
 </script>

@@ -13,9 +13,10 @@ export enum UserTypes {
 export type User = {
   name: string;
   lastname: string;
+  description: string;
   email: string;
   phone: string;
-  phoneCountry: string;
+  phonePrefix: string;
   country: string;
   city: string;
   street: string;
@@ -48,7 +49,6 @@ export type Musician = User & {
     level: number;
     name: string;
   }[];
-  description: string;
   links: string[];
   managers: YearFromTo<Manager>[] | undefined;
   // TODO: possibly an enum (?)

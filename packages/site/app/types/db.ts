@@ -9,12 +9,14 @@ export type User = {
   lastname: string;
   email: string;
   phone: string;
-  phoneCountry: string;
+  phonePrefix: string;
   country: string;
   city: string;
   street: string;
   houseNumber: string;
   apartment: string | undefined;
+  password: string;
+  description: string;
 };
 
 export type Band = {

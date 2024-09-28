@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-dvh flex justify-center items-center">
     <form
-      class="h-[320px] w-[500px] space-y-6 p-6 align-top"
+      class="h-[320px] w-[500px] space-y-6 p-6 align-top mx-auto"
       @submit.prevent="submitForm"
     >
       <UiInput
@@ -10,7 +10,7 @@
         type="email"
         placeholder="E-mail"
         autocomplete="email"
-        :errors="!!errorMessage"
+        :errors="errorMessage"
         @input="errorMessage = undefined"
       />
       <UiInput
@@ -19,7 +19,7 @@
         type="password"
         placeholder="Password"
         autocomplete="password"
-        :errors="!!errorMessage"
+        :errors="errorMessage"
         @input="errorMessage = undefined"
       />
       <UiButton
@@ -40,6 +40,10 @@
 <script setup lang="ts">
 defineOptions({
   name: 'LoginPage',
+});
+
+definePageMeta({
+  layout: 'clean'
 });
 
 const login = ref<{
