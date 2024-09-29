@@ -10,7 +10,8 @@ async fn main() {
         .route("/user", get(Json(User::default())))
         .route("/manager", get(Json(Manager::default())))
         .route("/musician", get(Json(Musician::default())))
-        .route("/band", get(Json(Band::default())));
+        .route("/band", get(Json(Band::default())))
+        .route("/user/create", get(User::create(User::default())));
     let listener = tokio::net::TcpListener::bind("127.0.0.1:3002").await.unwrap();
     axum::serve(listener, router).await.unwrap();
 }

@@ -6,7 +6,7 @@ use ts_rs::TS;
 use crate::{db::establish_connection, schema::users};
 use diesel::prelude::*;
 
-#[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
 pub struct YearFromTo<T> {
     pub from: String,
     pub to: String,
@@ -14,7 +14,8 @@ pub struct YearFromTo<T> {
 }
 
 
-#[derive(Clone, Copy, Debug, Serialize, Deserialize, TS)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, TS, diesel_derive_enum::DbEnum)]
+#[ExistingTypePath = "crate::schema::sql_types::UserTypes"]
 pub enum UserTypes {
     Musician,
     Manager,
@@ -105,16 +106,12 @@ impl User {
 
     pub fn create(user: User) {
         use crate::schema::users::dsl::*;
-        let user_id = uuid::Uuid::new_v4().to_string();
-
         let mut connection = establish_connection();
 
         diesel::insert_into(users)
             .values(&user)
             .execute(&mut connection)
             .expect("Error adding a user");
-    
-        user
     }
 }
 

@@ -3,8 +3,7 @@
 
 [print_schema]
 file = "src/schema.rs"
-custom_type_derives = ["diesel::query_builder::QueryId", "Clone", "ts_rs::TS", "std::fmt::Debug", "serde::Deserialize", "serde::Serialize"]
-generate_missing_sql_type_definitions = true
+custom_type_derives = ["diesel::query_builder::QueryId", "ts_rs::TS", "std::fmt::Debug", "serde::Deserialize", "serde::Serialize"]
 
 [migrations_directory]
 dir = "C:\\Users\\User\\Desktop\\projects\\mmatch\\packages\\backend\\migrations"
