@@ -1,6 +1,8 @@
 use axum::{Router, routing::get, Json};
 use user::{Band, Manager, Musician, User};
 mod user;
+pub mod schema;
+pub mod db;
 
 #[tokio::main]
 async fn main() {

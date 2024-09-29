@@ -1,8 +1,12 @@
 use std::fmt::Display;
+use diesel::prelude::{AsChangeset, Insertable, Queryable};
+use diesel::RunQueryDsl;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
+use crate::{db::establish_connection, schema::users};
+use diesel::prelude::*;
 
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset)]
 pub struct YearFromTo<T> {
     pub from: String,
     pub to: String,
@@ -23,7 +27,8 @@ impl Display for UserTypes {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset)]
+#[table_name = "users"]
 #[ts(export)]
 pub struct User {
     pub id: String,
@@ -58,9 +63,10 @@ impl User {
         password: String,
         types: Vec<UserTypes>,
     ) -> Self {
-        let id = uuid::Uuid::new_v4();
+        let user_id = uuid::Uuid::new_v4().to_string();
+
         Self {
-            id: id.to_string(),
+            id: user_id,
             name,
             lastname,
             description,
@@ -75,6 +81,7 @@ impl User {
             password,
             types,    
         }
+    
     }
 
     pub fn default() -> Self {
@@ -94,6 +101,20 @@ impl User {
             password: "".to_string(),
             types: vec![], 
         }
+    }
+
+    pub fn create(user: User) {
+        use crate::schema::users::dsl::*;
+        let user_id = uuid::Uuid::new_v4().to_string();
+
+        let mut connection = establish_connection();
+
+        diesel::insert_into(users)
+            .values(&user)
+            .execute(&mut connection)
+            .expect("Error adding a user");
+    
+        user
     }
 }
 
