@@ -124,7 +124,7 @@ impl User {
     pub async fn create(user: User) {
         use crate::schema::users::dsl::*;
         let mut connection = establish_connection();
-        println!("{:?}", user);
+
         diesel::insert_into(users)
             .values(&user)
             .execute(&mut connection)
