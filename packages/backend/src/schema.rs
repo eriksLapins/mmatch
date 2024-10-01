@@ -1,7 +1,7 @@
 // @generated automatically by Diesel CLI.
 
 pub mod sql_types {
-    #[derive(diesel::query_builder::QueryId, ts_rs::TS, std::fmt::Debug, serde::Deserialize, serde::Serialize, diesel::sql_types::SqlType)]
+    #[derive(diesel::query_builder::QueryId, std::fmt::Debug, serde::Deserialize, serde::Serialize, diesel::sql_types::SqlType)]
     #[diesel(postgres_type(name = "user_types"))]
     pub struct UserTypes;
 }

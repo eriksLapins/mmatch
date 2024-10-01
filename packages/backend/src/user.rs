@@ -19,7 +19,7 @@ pub struct YearFromTo<T> {
 pub enum UserTypes {
     Musician,
     Manager,
-    Explorer,
+    Explorer
 }
 
 impl Display for UserTypes {
@@ -33,6 +33,24 @@ impl Display for UserTypes {
 #[ts(export)]
 pub struct User {
     pub id: String,
+    pub name: String,
+    pub lastname: String,
+    pub description: String,
+    pub email: String,
+    pub phone: String,
+    pub phone_prefix: String,
+    pub country: String,
+    pub city: String,
+    pub street: String,
+    pub house_number: String,
+    pub apartment: Option<String>,
+    pub password: String,
+    pub types: Vec<UserTypes>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[ts(export)]
+pub struct CreateUserPayload {
     pub name: String,
     pub lastname: String,
     pub description: String,
@@ -103,11 +121,10 @@ impl User {
             types: vec![], 
         }
     }
-
-    pub fn create(user: User) {
+    pub async fn create(user: User) {
         use crate::schema::users::dsl::*;
         let mut connection = establish_connection();
-
+        println!("{:?}", user);
         diesel::insert_into(users)
             .values(&user)
             .execute(&mut connection)

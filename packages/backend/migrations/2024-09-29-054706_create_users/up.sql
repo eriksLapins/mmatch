@@ -1,6 +1,6 @@
 -- Your SQL goes here
 
-CREATE TYPE user_types AS ENUM ('Musician', 'Manager', 'Explorer');
+CREATE TYPE user_types AS ENUM ('musician', 'manager', 'explorer');
 
 CREATE TABLE users (
     id TEXT PRIMARY KEY,
