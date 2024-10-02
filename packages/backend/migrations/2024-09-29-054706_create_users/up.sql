@@ -16,6 +16,6 @@ CREATE TABLE users (
     street VARCHAR(255) NOT NULL,
     house_number VARCHAR(16) NOT NULL,
     apartment VARCHAR(16),
-    types user_types ARRAY NOT NULL,
+    types user_types ARRAY NOT NULL check (array_position(types, null) is null),
     UNIQUE(email)
 )

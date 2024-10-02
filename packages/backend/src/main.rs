@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use axum::{Router, routing::get, routing::post, Json};
-use db::{create_user, AppState};
+use db::AppState;
 use user::{Band, Manager, Musician, User};
 mod user;
 pub mod schema;
@@ -11,13 +11,20 @@ pub mod db;
 async fn main() {
     let shared_state = Arc::new(AppState);
     let router = Router::new()
-        .route("/user", get(Json(User::default())))
         .route("/manager", get(Json(Manager::default())))
         .route("/musician", get(Json(Musician::default())))
         .route("/band", get(Json(Band::default())))
+        .route("/user", get({
+            let shared_state = Arc::clone(&shared_state);
+            || User::get_all(shared_state)
+        }))
         .route("/user/create", post({
             let shared_state = Arc::clone(&shared_state);
-            move |body| create_user(body, shared_state)
+            move |body| User::create(body, shared_state)
+        }))
+        .route("/user/:user", get({
+            let shared_state = Arc::clone(&shared_state);
+            |path| User::get(path, shared_state)
         }));
 
 

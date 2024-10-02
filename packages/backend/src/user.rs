@@ -1,10 +1,14 @@
 use std::fmt::Display;
+use std::sync::Arc;
+use axum::extract::Path;
+use axum::Json;
 use diesel::prelude::{AsChangeset, Insertable, Queryable};
 use diesel::RunQueryDsl;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 use crate::{db::establish_connection, schema::users};
 use diesel::prelude::*;
+use crate::db::AppState;
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
 pub struct YearFromTo<T> {
@@ -14,7 +18,7 @@ pub struct YearFromTo<T> {
 }
 
 
-#[derive(Clone, Copy, Debug, Serialize, Deserialize, TS, diesel_derive_enum::DbEnum)]
+#[derive(Clone, Copy, Debug, Serialize, Deserialize, TS, diesel_derive_enum::DbEnum, PartialEq)]
 #[ExistingTypePath = "crate::schema::sql_types::UserTypes"]
 pub enum UserTypes {
     Musician,
@@ -28,8 +32,8 @@ impl Display for UserTypes {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset)]
-#[table_name = "users"]
+#[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset, Selectable, PartialEq)]
+#[diesel(table_name = users)]
 #[ts(export)]
 pub struct User {
     pub id: String,
@@ -37,6 +41,7 @@ pub struct User {
     pub lastname: String,
     pub description: String,
     pub email: String,
+    pub password: String,
     pub phone: String,
     pub phone_prefix: String,
     pub country: String,
@@ -44,8 +49,7 @@ pub struct User {
     pub street: String,
     pub house_number: String,
     pub apartment: Option<String>,
-    pub password: String,
-    pub types: Vec<UserTypes>,
+    pub types: Vec<Option<UserTypes>>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
@@ -63,7 +67,7 @@ pub struct CreateUserPayload {
     pub house_number: String,
     pub apartment: Option<String>,
     pub password: String,
-    pub types: Vec<UserTypes>,
+    pub types: Vec<Option<UserTypes>>,
 }
 
 impl User {
@@ -80,7 +84,7 @@ impl User {
         house_number: String,
         apartment: Option<String>,
         password: String,
-        types: Vec<UserTypes>,
+        types: Vec<Option<UserTypes>>,
     ) -> Self {
         let user_id = uuid::Uuid::new_v4().to_string();
 
@@ -121,14 +125,51 @@ impl User {
             types: vec![], 
         }
     }
-    pub async fn create(user: User) {
+    pub async fn create(Json(payload): Json<CreateUserPayload>, _state: Arc<AppState>) {
         use crate::schema::users::dsl::*;
         let mut connection = establish_connection();
+        let user = User::new(
+            payload.name,
+            payload.lastname,
+            payload.description,
+            payload.email,
+            payload.phone,
+            payload.phone_prefix,
+            payload.country,
+            payload.city,
+            payload.street,
+            payload.house_number,
+            payload.apartment,
+            payload.password,
+            payload.types,
+        );
 
         diesel::insert_into(users)
             .values(&user)
             .execute(&mut connection)
             .expect("Error adding a user");
+    }
+    pub async fn get(Path(user): Path<String>, _state: Arc<AppState>) -> Json<Vec<User>> {
+        use crate::schema::users::dsl::*;
+        let mut connection = establish_connection();
+
+        let user = users
+            .select(User::as_select())
+            .filter(id.eq(user))
+            .load::<User>(&mut connection)
+            .expect("Failed to load user");
+        Json(user)
+    }
+    
+    pub async fn get_all(_state: Arc<AppState>) -> Json<Vec<User>> {
+        use crate::schema::users::dsl::*;
+        let mut connection = establish_connection();
+
+        let user = users
+            .select(User::as_select())
+            .load::<User>(&mut connection)
+            .expect("Failed to load users");
+        Json(user)
     }
 }
 
