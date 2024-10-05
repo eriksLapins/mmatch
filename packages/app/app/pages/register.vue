@@ -183,13 +183,23 @@ function checkPasswordsMatch() {
   failedRepeat.value = 'Paswords do not match';
 }
 
-function onSubmit() {
+async function onSubmit() {
   if (failedRepeat.value || repeatPassword.value !== form.value.password) {
     failedRepeat.value = 'Password do not match';
     return;
   }
   try {
     console.log(form.value);
+    const endpoint = useBack('/user/create');
+    await $fetch<User>(endpoint.path, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
+        ...form.value
+      }
+    });
     // return navigateTo('/', { external: true });
   } catch (e) {
     console.log(e);

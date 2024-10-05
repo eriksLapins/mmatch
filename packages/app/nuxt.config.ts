@@ -1,6 +1,7 @@
 const PORT = process.env.PORT;
 const APP_URL = process.env.APP_URL;
 const SITE_URL = process.env.SITE_URL;
+const BACKEND_URL = process.env.BACKEND_URL;
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -20,6 +21,7 @@ export default defineNuxtConfig({
     public: {
       appUrl: APP_URL,
       siteUrl: SITE_URL,
+      backendUrl: BACKEND_URL,
     }
   },
 

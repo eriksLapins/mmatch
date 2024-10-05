@@ -1,11 +1,15 @@
 use std::fmt::Display;
 use std::sync::Arc;
+use axum::body::Body;
 use axum::extract::Path;
+use axum::http::{Response, StatusCode};
 use axum::Json;
 use diesel::prelude::{AsChangeset, Insertable, Queryable};
 use diesel::RunQueryDsl;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use ts_rs::TS;
+use crate::errors::Error;
 use crate::{db::establish_connection, schema::users};
 use diesel::prelude::*;
 use crate::db::AppState;
@@ -125,7 +129,7 @@ impl User {
             types: vec![], 
         }
     }
-    pub async fn create(Json(payload): Json<CreateUserPayload>, _state: Arc<AppState>) {
+    pub async fn create(Json(payload): Json<CreateUserPayload>, _state: Arc<AppState>) -> Result<StatusCode, (StatusCode, Response<Body>)> {
         use crate::schema::users::dsl::*;
         let mut connection = establish_connection();
         let user = User::new(
@@ -144,10 +148,51 @@ impl User {
             payload.types,
         );
 
-        diesel::insert_into(users)
+        
+        let mut errors = serde_json::Map::new();
+        if &user.name == "" {
+            errors.insert("name".to_string(), Value::String("Name is required".to_string()));
+        }
+        if &user.lastname == "" {
+            errors.insert("lastname".to_string(), Value::String("Lastname is required".to_string()));
+        }
+        if &user.description == "" {
+            errors.insert("description".to_string(), Value::String("description is required".to_string()));
+        }
+        if &user.phone == "" {
+            errors.insert("phone".to_string(), Value::String("phone is required".to_string()));
+        }
+        if &user.phone_prefix == "" {
+            errors.insert("phone_prefix".to_string(), Value::String("phone_prefix is required".to_string()));
+        }
+        if &user.country == "" {
+            errors.insert("country".to_string(), Value::String("country is required".to_string()));
+        }
+        if &user.city == "" {
+            errors.insert("city".to_string(), Value::String("city is required".to_string()));
+        }
+        if &user.street == "" {
+            errors.insert("street".to_string(), Value::String("street is required".to_string()));
+        }
+        if &user.house_number == "" {
+            errors.insert("house_number".to_string(), Value::String("house_number is required".to_string()));
+        }
+        if &user.password == "" {
+            errors.insert("password".to_string(), Value::String("password is required".to_string()));
+        }
+
+        if errors.is_empty() == false {
+            return Err(Error::new(StatusCode::UNPROCESSABLE_ENTITY, StatusCode::UNPROCESSABLE_ENTITY.to_string(), Some(errors.into())))
+        }
+
+        let user = diesel::insert_into(users)
             .values(&user)
-            .execute(&mut connection)
-            .expect("Error adding a user");
+            .execute(&mut connection);
+
+        match user {
+            Err(e) => Err(Error::new(StatusCode::BAD_REQUEST, e.to_string(), None)),
+            Ok(_) => Ok(StatusCode::OK)
+        }
     }
     pub async fn get(Path(user): Path<String>, _state: Arc<AppState>) -> Json<Vec<User>> {
         use crate::schema::users::dsl::*;
