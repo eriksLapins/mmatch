@@ -165,25 +165,28 @@ impl User {
             return Err(errors::Error::new(StatusCode::UNPROCESSABLE_ENTITY, StatusCode::UNPROCESSABLE_ENTITY.to_string(), Some(errors.into())))
         }
 
-        let user = diesel::insert_into(users)
+        let user_result = diesel::insert_into(users)
             .values(&user)
             .execute(&mut connection);
 
-        match user {
+        match user_result {
             Err(e) => Err(errors::Error::new(StatusCode::BAD_REQUEST, e.to_string(), None)),
             Ok(_) => Ok(StatusCode::OK)
         }
     }
-    pub async fn get(Path(user): Path<String>, _state: Arc<AppState>) -> Json<Vec<User>> {
+    pub async fn get(Path(user): Path<String>, _state: Arc<AppState>) -> Result<Json<Vec<User>>, (StatusCode, Response<Body>)> {
         use crate::schema::users::dsl::*;
         let mut connection = establish_connection();
 
         let user = users
             .select(User::as_select())
             .filter(id.eq(user))
-            .load::<User>(&mut connection)
-            .expect("Failed to load user");
-        Json(user)
+            .load::<User>(&mut connection);
+            
+        match user {
+            Ok(user) => Ok(Json(user)),
+            Err(e) => Err(errors::Error::new(StatusCode::NOT_FOUND, e.to_string(), None))
+        }
     }
     
     pub async fn get_all(_state: Arc<AppState>) -> Json<Vec<User>> {

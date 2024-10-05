@@ -1,10 +1,11 @@
 use crate::prelude::*;
 
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset, Selectable, PartialEq)]
+#[diesel(table_name=bands)]
 #[ts(export)]
 pub struct Band {
     name: String,
-    established_in: i16,
+    established_in: i32,
     description: String,
     country_of_origin: String,
     members: Vec<YearFromTo<MusicianWithPurpose>>,
@@ -13,6 +14,10 @@ pub struct Band {
     links: Vec<String>,
     managers: Option<Vec<YearFromTo<Manager>>>,
     searching_for: Vec<String>,
+}
+
+impl diesel::Expression for Band {
+    type SqlType = diesel::sql_types::Json;
 }
 
 impl Band {

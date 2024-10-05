@@ -1,25 +1,30 @@
 use crate::prelude::*;
 
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset, Selectable, PartialEq)]
+#[diesel(table_name=managers)]
 #[ts(export)]
 pub struct Manager {
-    user: User,
+    user_id: String,
     stage_name: String,
-    commission: [f32; 2],
+    commission: Vec<f32>,
     bands: Vec<YearFromTo<Band>>,
     categories_interested_in: Vec<String>,
 }
 
+impl diesel::Expression for Manager {
+    type SqlType = diesel::sql_types::Json;
+}
+
 impl Manager {
     pub fn new(
-        user: User,
+        user_id: String,
         stage_name: String,
-        commission: [f32; 2],
+        commission: Vec<f32>,
         bands: Vec<YearFromTo<Band>>,
         categories_interested_in: Vec<String>
     ) -> Self {
         Self {
-            user,
+            user_id,
             stage_name,
             commission,
             bands,
@@ -28,11 +33,11 @@ impl Manager {
     }
 
     pub fn default() -> Self {
-        let user = User::default();
+        let user_id = User::default().id;
         Self {
-            user,
+            user_id,
             stage_name: "".to_string(),
-            commission: [0.0, 0.0],
+            commission: vec![0.0, 0.0],
             bands: vec![],
             categories_interested_in: vec![],
         }
