@@ -1,25 +1,6 @@
+use diesel::Selectable;
 use std::fmt::Display;
-use std::sync::Arc;
-use axum::body::Body;
-use axum::extract::Path;
-use axum::http::{Response, StatusCode};
-use axum::Json;
-use diesel::prelude::{AsChangeset, Insertable, Queryable};
-use diesel::RunQueryDsl;
-use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use ts_rs::TS;
-use crate::errors::Error;
-use crate::{db::establish_connection, schema::users};
-use diesel::prelude::*;
-use crate::db::AppState;
-
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
-pub struct YearFromTo<T> {
-    pub from: String,
-    pub to: String,
-    pub item: T,
-}
+use crate::prelude::*;
 
 
 #[derive(Clone, Copy, Debug, Serialize, Deserialize, TS, diesel_derive_enum::DbEnum, PartialEq)]
@@ -35,7 +16,6 @@ impl Display for UserTypes {
         write!(f, "{}", self)
     }
 }
-
 #[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset, Selectable, PartialEq)]
 #[diesel(table_name = users)]
 #[ts(export)]
@@ -182,7 +162,7 @@ impl User {
         }
 
         if errors.is_empty() == false {
-            return Err(Error::new(StatusCode::UNPROCESSABLE_ENTITY, StatusCode::UNPROCESSABLE_ENTITY.to_string(), Some(errors.into())))
+            return Err(errors::Error::new(StatusCode::UNPROCESSABLE_ENTITY, StatusCode::UNPROCESSABLE_ENTITY.to_string(), Some(errors.into())))
         }
 
         let user = diesel::insert_into(users)
@@ -190,7 +170,7 @@ impl User {
             .execute(&mut connection);
 
         match user {
-            Err(e) => Err(Error::new(StatusCode::BAD_REQUEST, e.to_string(), None)),
+            Err(e) => Err(errors::Error::new(StatusCode::BAD_REQUEST, e.to_string(), None)),
             Ok(_) => Ok(StatusCode::OK)
         }
     }
@@ -215,163 +195,5 @@ impl User {
             .load::<User>(&mut connection)
             .expect("Failed to load users");
         Json(user)
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
-pub struct Skills {
-    from: String,
-    to: String,
-    level: i8,
-    name: String,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
-#[ts(export)]
-pub struct Musician {
-    user: User,
-    stage_name: String,
-    bands: Vec<YearFromTo<Band>>,
-    skills: Vec<Skills>,
-    links: Vec<String>,
-    managers: Option<Vec<YearFromTo<Manager>>>,
-    open_to_collab_with: Vec<String>,
-}
-
-impl Musician {
-    pub fn new(
-        user: User,
-        stage_name: String,
-        bands: Vec<YearFromTo<Band>>,
-        skills: Vec<Skills>,
-        links: Vec<String>,
-        managers: Option<Vec<YearFromTo<Manager>>>,
-        open_to_collab_with: Vec<String>,
-    ) -> Self {
-        Self {
-            user,
-            stage_name,
-            bands,
-            skills,
-            links,
-            managers,
-            open_to_collab_with
-        }
-    }
-
-    pub fn default() -> Self {
-        let user = User::default();
-        Self {
-            user,
-            stage_name: "".to_string(),
-            bands: vec![],
-            skills: vec![],
-            links: vec![],
-            managers: None,
-            open_to_collab_with: vec![],
-        }
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
-#[ts(export)]
-pub struct Manager {
-    user: User,
-    stage_name: String,
-    commission: [f32; 2],
-    bands: Vec<YearFromTo<Band>>,
-    categories_interested_in: Vec<String>,
-}
-
-impl Manager {
-    pub fn new(
-        user: User,
-        stage_name: String,
-        commission: [f32; 2],
-        bands: Vec<YearFromTo<Band>>,
-        categories_interested_in: Vec<String>
-    ) -> Self {
-        Self {
-            user,
-            stage_name,
-            commission,
-            bands,
-            categories_interested_in
-        }
-    }
-
-    pub fn default() -> Self {
-        let user = User::default();
-        Self {
-            user,
-            stage_name: "".to_string(),
-            commission: [0.0, 0.0],
-            bands: vec![],
-            categories_interested_in: vec![],
-        }
-    }
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
-pub struct MusicianWithPurpose {
-    musician: Musician,
-    main_purpose: String,
-}
-
-#[derive(Clone, Debug, Serialize, Deserialize, TS)]
-#[ts(export)]
-pub struct Band {
-    name: String,
-    established_in: i16,
-    description: String,
-    country_of_origin: String,
-    members: Vec<YearFromTo<MusicianWithPurpose>>,
-    music_styles: Vec<String>,
-    instruments: Vec<String>,
-    links: Vec<String>,
-    managers: Option<Vec<YearFromTo<Manager>>>,
-    searching_for: Vec<String>,
-}
-
-impl Band {
-    pub fn new(
-        name: String,
-        established_in: i16,
-        description: String,
-        country_of_origin: String,
-        members: Vec<YearFromTo<MusicianWithPurpose>>,
-        music_styles: Vec<String>,
-        instruments: Vec<String>,
-        links: Vec<String>,
-        managers: Option<Vec<YearFromTo<Manager>>>,
-        searching_for: Vec<String>,
-    ) -> Self {
-        Self {
-            name,
-            established_in,
-            description,
-            country_of_origin,
-            members,
-            music_styles,
-            instruments,
-            links,
-            managers,
-            searching_for,
-        }
-    }
-
-    pub fn default() -> Self {
-        Self {
-            name: "".to_string(),
-            established_in: 1990,
-            description: "".to_string(),
-            country_of_origin: "".to_string(),
-            members: vec![],
-            music_styles: vec![],
-            instruments: vec![],
-            links: vec![],
-            managers: None,
-            searching_for: vec![],
-        }
     }
 }

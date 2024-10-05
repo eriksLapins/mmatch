@@ -1,13 +1,31 @@
 use std::{fmt::Debug, sync::Arc};
 
-use axum::{http::{HeaderValue, Response, header}, middleware::map_response, routing::{get, post}, Json, Router};
-use db::AppState;
-use user::{Band, Manager, Musician, User};
+use axum::{http::{HeaderValue, Response, header}, middleware::map_response, routing::{get, post}, Router};
 use tower_http::cors::CorsLayer;
-mod user;
 pub mod schema;
 pub mod db;
 pub mod errors;
+pub mod models;
+pub mod utils;
+
+mod prelude {
+    pub use diesel::prelude::*;
+    pub use crate::models::user::* ;
+    pub use crate::models::musician::*;
+    pub use crate::models::band::*;
+    pub use crate::models::manager::*;
+    pub use crate::db::*;
+    pub use serde::{Deserialize, Serialize};
+    pub use ts_rs::TS;
+    pub use serde_json::Value;
+    pub use axum::{body::Body, extract::Path, http::{Response, StatusCode}, Json};
+    pub use std::sync::Arc;
+    pub use crate::schema::*;
+    pub use crate::errors;
+    pub use crate::utils::*;
+}
+
+use crate::prelude::*;
 
 async fn header_layer<T: Debug>(mut response: Response<T>) -> Response<T> {
     let headers = response.headers_mut();
