@@ -7,11 +7,11 @@ pub struct Musician {
     id: String,
     user_id: String,
     stage_name: String,
-    bands: Vec<YearFromTo<Band>>,
-    skills: Vec<Skills>,
-    links: Vec<String>,
-    managers: Option<Vec<YearFromTo<Manager>>>,
-    open_to_collab_with: Vec<String>,
+    bands: Vec<Option<YearFromTo<Band>>>,
+    managers: Option<Vec<Option<YearFromTo<Manager>>>>,
+    links: Vec<Option<String>>,
+    skills: Vec<Option<String>>,
+    open_to_collab_with: Vec<Option<String>>,
 }
 impl diesel::Expression for Musician {
     type SqlType = diesel::sql_types::Json;
@@ -22,22 +22,22 @@ impl diesel::Expression for Musician {
 pub struct CreateMusicianPayload {
     user_id: String,
     stage_name: String,
-    bands: Vec<YearFromTo<Band>>,
-    skills: Vec<Skills>,
-    links: Vec<String>,
-    managers: Option<Vec<YearFromTo<Manager>>>,
-    open_to_collab_with: Vec<String>,
+    bands: Vec<Option<YearFromTo<Band>>>,
+    skills: Vec<Option<String>>,
+    links: Vec<Option<String>>,
+    managers: Option<Vec<Option<YearFromTo<Manager>>>>,
+    open_to_collab_with: Vec<Option<String>>,
 }
 
 impl Musician {
     pub fn new(
         user_id: String,
         stage_name: String,
-        bands: Vec<YearFromTo<Band>>,
-        skills: Vec<Skills>,
-        links: Vec<String>,
-        managers: Option<Vec<YearFromTo<Manager>>>,
-        open_to_collab_with: Vec<String>,
+        bands: Vec<Option<YearFromTo<Band>>>,
+        skills: Vec<Option<String>>,
+        links: Vec<Option<String>>,
+        managers: Option<Vec<Option<YearFromTo<Manager>>>>,
+        open_to_collab_with: Vec<Option<String>>,
     ) -> Self {
         Self {
             id: uuid::Uuid::new_v4().to_string(),
@@ -61,7 +61,7 @@ impl Musician {
             skills: vec![],
             links: vec![],
             managers: None,
-            open_to_collab_with: vec![],
+            open_to_collab_with: Some(vec![]),
         }
     }
 
