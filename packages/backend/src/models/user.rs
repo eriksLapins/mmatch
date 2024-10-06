@@ -171,10 +171,10 @@ impl User {
 
         match user_result {
             Err(e) => Err(errors::Error::new(StatusCode::BAD_REQUEST, e.to_string(), None)),
-            Ok(_) => Ok(StatusCode::OK)
+            Ok(_) => Ok(StatusCode::CREATED)
         }
     }
-    pub async fn get(Path(user): Path<String>, _state: Arc<AppState>) -> Result<Json<Vec<User>>, (StatusCode, Response<Body>)> {
+    pub async fn get(Path(user): Path<String>, _state: Arc<AppState>) -> Result<(StatusCode, Json<User>), (StatusCode, Response<Body>)> {
         use crate::schema::users::dsl::*;
         let mut connection = establish_connection();
 
@@ -184,7 +184,7 @@ impl User {
             .load::<User>(&mut connection);
             
         match user {
-            Ok(user) => Ok(Json(user)),
+            Ok(user) => Ok((StatusCode::OK, Json(user[0].clone()))),
             Err(e) => Err(errors::Error::new(StatusCode::NOT_FOUND, e.to_string(), None))
         }
     }

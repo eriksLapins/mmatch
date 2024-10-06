@@ -7,12 +7,10 @@ pub struct Band {
     established_in: i32,
     description: String,
     country_of_origin: String,
-    // YearFromTo<MusicianWithPurpose>
     members: Vec<Option<String>>,
     music_styles: Vec<String>,
     instruments: Vec<String>,
     links: Vec<String>,
-    // YearFromTo<Manager>
     managers: Option<Vec<Option<String>>>,
     searching_for: Vec<String>,
 }

@@ -22,7 +22,7 @@ impl diesel::Expression for Musician {
 #[ts(export, rename="Musician", export_to="Musician.ts")]
 pub struct MusicianResponse {
     id: String,
-    user_id: String,
+    user: User,
     stage_name: String,
     bands: Vec<Option<GenYearFromTo<Band>>>,
     managers: Option<Vec<GenYearFromTo<Manager>>>,
@@ -82,10 +82,15 @@ impl Musician {
     pub async fn create(Json(payload): Json<CreateMusicianPayload>, state: Arc<AppState>) -> Result<StatusCode, (StatusCode, Response<Body>)> {
         use crate::schema::musicians::dsl::*;
         let user_id_clone = payload.user_id.clone();
-        let Json(user) = User::get(Path(payload.user_id), state).await.unwrap();
-        if user.len() == 0 {
-            return Err(errors::Error::new(StatusCode::NOT_FOUND, "User not found".to_string(), Some(user_id_clone.into())))
-        }
+        let user_response = User::get(Path(payload.user_id), state).await;
+        let mut errors = serde_json::Map::new();
+        match user_response {
+            Err(_e) => {
+                errors.insert("user_id".to_string(), Value::String(format!("User not found")));
+                return Err(errors::Error::new(StatusCode::NOT_FOUND, "User not found".to_string(), Some(errors.into())))
+            }
+            Ok(_) => ()
+        };
         let mut connection = establish_connection();
         let musician = Musician::new(
             user_id_clone,
@@ -97,8 +102,6 @@ impl Musician {
             payload.open_to_collab_with,
         );
 
-        
-        let mut errors = serde_json::Map::new();
         if &musician.stage_name == "" {
             errors.insert("stage_name".to_string(), Value::String("Stage name is required".to_string()));
         }
@@ -113,14 +116,13 @@ impl Musician {
 
         match musician_result {
             Err(e) => Err(errors::Error::new(StatusCode::BAD_REQUEST, e.to_string(), None)),
-            Ok(_) => Ok(StatusCode::OK)
+            Ok(_) => Ok(StatusCode::CREATED)
         }
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset, Selectable, PartialEq)]
+#[derive(Clone, Debug, Serialize, Deserialize, Insertable, Queryable, AsChangeset, Selectable, PartialEq)]
 #[diesel(table_name=musician_with_purpose)]
-#[ts(export)]
 pub struct DbMusicianWithPurpose {
     band_id: String,
     musician_id: String,
