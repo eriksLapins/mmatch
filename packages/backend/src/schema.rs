@@ -32,8 +32,20 @@ diesel::table! {
         #[max_length = 255]
         stage_name -> Varchar,
         commission -> Array<Nullable<Float8>>,
-        bands -> Array<Nullable<Json>>,
+        bands -> Array<Nullable<Text>>,
         categories_interested_in -> Array<Nullable<Text>>,
+    }
+}
+
+diesel::table! {
+    musician_with_purpose (id) {
+        id -> Text,
+        #[max_length = 255]
+        band_id -> Nullable<Varchar>,
+        #[max_length = 255]
+        musician_id -> Nullable<Varchar>,
+        #[max_length = 255]
+        main_purpose -> Nullable<Varchar>,
     }
 }
 
@@ -44,8 +56,8 @@ diesel::table! {
         user_id -> Varchar,
         #[max_length = 255]
         stage_name -> Varchar,
-        bands -> Array<Nullable<Json>>,
-        managers -> Nullable<Array<Nullable<Json>>>,
+        bands -> Array<Nullable<Text>>,
+        managers -> Nullable<Array<Nullable<Text>>>,
         links -> Array<Nullable<Text>>,
         skills -> Array<Nullable<Text>>,
         open_to_collab_with -> Array<Nullable<Text>>,
@@ -99,21 +111,25 @@ diesel::table! {
 }
 
 diesel::table! {
+    use diesel::sql_types::*;
+    use super::sql_types::UserTypes;
+
     year_from_to (id) {
         id -> Text,
-        #[max_length = 255]
-        user_band_manager -> Varchar,
         #[max_length = 125]
         year_from -> Varchar,
         #[max_length = 125]
         year_to -> Varchar,
-        item -> Json,
+        item_type -> UserTypes,
+        #[max_length = 255]
+        item_id -> Varchar,
     }
 }
 
 diesel::allow_tables_to_appear_in_same_query!(
     bands,
     managers,
+    musician_with_purpose,
     musicians,
     skills,
     users,

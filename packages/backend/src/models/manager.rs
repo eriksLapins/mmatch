@@ -7,7 +7,8 @@ pub struct Manager {
     user_id: String,
     stage_name: String,
     commission: Vec<f32>,
-    bands: Vec<YearFromTo<Band>>,
+    // year_from_to band
+    bands: Vec<String>,
     categories_interested_in: Vec<String>,
 }
 
@@ -20,7 +21,7 @@ impl Manager {
         user_id: String,
         stage_name: String,
         commission: Vec<f32>,
-        bands: Vec<YearFromTo<Band>>,
+        bands: Vec<String>,
         categories_interested_in: Vec<String>
     ) -> Self {
         Self {

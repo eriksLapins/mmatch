@@ -2,13 +2,14 @@ use crate::prelude::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset, Selectable, PartialEq)]
 #[diesel(table_name = musicians)]
-#[ts(export)]
 pub struct Musician {
     id: String,
     user_id: String,
     stage_name: String,
-    bands: Vec<Option<YearFromTo<Band>>>,
-    managers: Option<Vec<Option<YearFromTo<Manager>>>>,
+    // year_from_to band
+    bands: Vec<Option<String>>,
+    // year from to manager
+    managers: Option<Vec<Option<String>>>,
     links: Vec<Option<String>>,
     skills: Vec<Option<String>>,
     open_to_collab_with: Vec<Option<String>>,
@@ -18,14 +19,27 @@ impl diesel::Expression for Musician {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[ts(export, rename="Musician", export_to="Musician.ts")]
+pub struct MusicianResponse {
+    id: String,
+    user_id: String,
+    stage_name: String,
+    bands: Vec<Option<GenYearFromTo<Band>>>,
+    managers: Option<Vec<GenYearFromTo<Manager>>>,
+    links: Vec<Option<String>>,
+    skills: Vec<Option<String>>,
+    open_to_collab_with: Vec<Option<String>>,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
 #[ts(export)]
 pub struct CreateMusicianPayload {
     user_id: String,
     stage_name: String,
-    bands: Vec<Option<YearFromTo<Band>>>,
+    bands: Vec<Option<String>>,
     skills: Vec<Option<String>>,
     links: Vec<Option<String>>,
-    managers: Option<Vec<Option<YearFromTo<Manager>>>>,
+    managers: Option<Vec<Option<String>>>,
     open_to_collab_with: Vec<Option<String>>,
 }
 
@@ -33,10 +47,10 @@ impl Musician {
     pub fn new(
         user_id: String,
         stage_name: String,
-        bands: Vec<Option<YearFromTo<Band>>>,
+        bands: Vec<Option<String>>,
         skills: Vec<Option<String>>,
         links: Vec<Option<String>>,
-        managers: Option<Vec<Option<YearFromTo<Manager>>>>,
+        managers: Option<Vec<Option<String>>>,
         open_to_collab_with: Vec<Option<String>>,
     ) -> Self {
         Self {
@@ -61,7 +75,7 @@ impl Musician {
             skills: vec![],
             links: vec![],
             managers: None,
-            open_to_collab_with: Some(vec![]),
+            open_to_collab_with: vec![],
         }
     }
 
@@ -104,9 +118,19 @@ impl Musician {
     }
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset, Selectable, PartialEq)]
+#[diesel(table_name=musician_with_purpose)]
+#[ts(export)]
+pub struct DbMusicianWithPurpose {
+    band_id: String,
+    musician_id: String,
+    main_purpose: String,
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[ts(export)]
 pub struct MusicianWithPurpose {
-    musician: Musician,
+    musician: MusicianResponse,
     main_purpose: String,
 }
 

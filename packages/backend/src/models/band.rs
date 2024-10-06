@@ -2,17 +2,18 @@ use crate::prelude::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS, Insertable, Queryable, AsChangeset, Selectable, PartialEq)]
 #[diesel(table_name=bands)]
-#[ts(export)]
 pub struct Band {
     name: String,
     established_in: i32,
     description: String,
     country_of_origin: String,
-    members: Vec<YearFromTo<MusicianWithPurpose>>,
+    // YearFromTo<MusicianWithPurpose>
+    members: Vec<Option<String>>,
     music_styles: Vec<String>,
     instruments: Vec<String>,
     links: Vec<String>,
-    managers: Option<Vec<YearFromTo<Manager>>>,
+    // YearFromTo<Manager>
+    managers: Option<Vec<Option<String>>>,
     searching_for: Vec<String>,
 }
 
@@ -20,17 +21,32 @@ impl diesel::Expression for Band {
     type SqlType = diesel::sql_types::Json;
 }
 
+#[derive(Clone, Debug, Serialize, Deserialize, TS)]
+#[ts(export, rename="Band", export_to="Band.ts")]
+pub struct BandResponse {
+    name: String,
+    established_in: i32,
+    description: String,
+    country_of_origin: String,
+    members: Vec<MusicianWithPurpose>,
+    music_styles: Vec<String>,
+    instruments: Vec<String>,
+    links: Vec<String>,
+    managers: Option<Vec<GenYearFromTo<Manager>>>,
+    searching_for: Vec<String>,
+}
+
 impl Band {
     pub fn new(
         name: String,
-        established_in: i16,
+        established_in: i32,
         description: String,
         country_of_origin: String,
-        members: Vec<YearFromTo<MusicianWithPurpose>>,
+        members: Vec<Option<String>>,
         music_styles: Vec<String>,
         instruments: Vec<String>,
         links: Vec<String>,
-        managers: Option<Vec<YearFromTo<Manager>>>,
+        managers: Option<Vec<Option<String>>>,
         searching_for: Vec<String>,
     ) -> Self {
         Self {
