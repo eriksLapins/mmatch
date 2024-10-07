@@ -24,11 +24,11 @@ pub struct MusicianResponse {
     id: String,
     user: User,
     stage_name: String,
-    bands: Vec<Option<GenYearFromTo<Band>>>,
+    bands: Vec<GenYearFromTo<Band>>,
     managers: Option<Vec<GenYearFromTo<Manager>>>,
-    links: Vec<Option<String>>,
-    skills: Vec<Option<String>>,
-    open_to_collab_with: Vec<Option<String>>,
+    links: Vec<String>,
+    skills: Vec<String>,
+    open_to_collab_with: Vec<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, TS)]
@@ -118,6 +118,50 @@ impl Musician {
             Err(e) => Err(errors::Error::new(StatusCode::BAD_REQUEST, e.to_string(), None)),
             Ok(_) => Ok(StatusCode::CREATED)
         }
+    }
+
+    
+    pub async fn get(Path(musician): Path<String>, state: Arc<AppState>) -> Result<(StatusCode, Json<MusicianResponse>), (StatusCode, Response<Body>)> {
+        use crate::schema::musicians::dsl::*;
+        let mut connection = establish_connection();
+
+        let musician_response = musicians
+            .select(Musician::as_select())
+            .filter(id.eq(musician))
+            .load::<Musician>(&mut connection);
+        let musician_extracted = match musician_response {
+                Ok(musician) => musician[0].clone(),
+                Err(e) => return Err(errors::Error::new(StatusCode::NOT_FOUND, e.to_string(), None))
+        };
+        let user_response = User::get(Path(musician_extracted.user_id), state).await;
+
+        let user = match user_response {
+            Err(_e) => {
+                let mut errors = serde_json::Map::new();
+                errors.insert("user".to_string(), Value::String(format!("User not found")));
+                return Err(errors::Error::new(StatusCode::INTERNAL_SERVER_ERROR, "User not found".to_string(), Some(errors.into())))
+            }
+            Ok((_status, Json(user))) => user
+        };
+
+        let filtered_open_to_collab_with: Vec<String> = musician_extracted.open_to_collab_with.into_iter().filter_map(|i| i ).collect();
+        let filtered_skills: Vec<String> = musician_extracted.skills.into_iter().filter_map(|i| i ).collect();
+        let filtered_links: Vec<String> = musician_extracted.links.into_iter().filter_map(|i| i ).collect();
+
+        let response_musician = MusicianResponse {
+            id: musician_extracted.id,
+            stage_name: musician_extracted.stage_name,
+            user,
+            open_to_collab_with: filtered_open_to_collab_with,
+            // TODO: when band has a get request
+            bands: vec![],
+            links: filtered_links,
+            // TODO: when managers have a get request
+            managers: None,
+            skills: filtered_skills,
+        };
+
+        Ok((StatusCode::OK, Json(response_musician)))
     }
 }
 

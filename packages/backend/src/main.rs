@@ -57,6 +57,10 @@ async fn main() {
         let shared_state = Arc::clone(&shared_state);
         move |body| Musician::create(body, shared_state)
     }))
+    .route("/musician/:musician", get({
+        let shared_state = Arc::clone(&shared_state);
+        move |path| Musician::get(path, shared_state)
+    }))
     .layer(
         CorsLayer::new()
             .allow_origin("http://localhost:3001".parse::<HeaderValue>().unwrap())
