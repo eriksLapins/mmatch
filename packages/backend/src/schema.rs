@@ -15,11 +15,11 @@ diesel::table! {
         description -> Text,
         #[max_length = 255]
         country_of_origin -> Varchar,
-        members -> Array<Nullable<Json>>,
+        members -> Array<Nullable<Text>>,
         music_styles -> Array<Nullable<Text>>,
         instruments -> Array<Nullable<Text>>,
         links -> Array<Nullable<Text>>,
-        managers -> Nullable<Array<Nullable<Json>>>,
+        managers -> Nullable<Array<Nullable<Text>>>,
         searching_for -> Array<Nullable<Text>>,
     }
 }
@@ -38,14 +38,13 @@ diesel::table! {
 }
 
 diesel::table! {
-    musician_with_purpose (id) {
-        id -> Text,
+    musician_with_purpose (band_id, musician_id) {
         #[max_length = 255]
-        band_id -> Nullable<Varchar>,
+        band_id -> Varchar,
         #[max_length = 255]
-        musician_id -> Nullable<Varchar>,
+        musician_id -> Varchar,
         #[max_length = 255]
-        main_purpose -> Nullable<Varchar>,
+        main_purpose -> Varchar,
     }
 }
 
@@ -125,6 +124,12 @@ diesel::table! {
         item_id -> Varchar,
     }
 }
+
+diesel::joinable!(managers -> users (user_id));
+diesel::joinable!(musician_with_purpose -> bands (band_id));
+diesel::joinable!(musician_with_purpose -> musicians (musician_id));
+diesel::joinable!(musicians -> users (user_id));
+diesel::joinable!(skills -> users (user_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     bands,

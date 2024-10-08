@@ -1,7 +1,7 @@
 -- Your SQL goes here
 CREATE TABLE skills (
     id TEXT PRIMARY KEY,
-    user_id VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL REFERENCES users(id),
     year_from VARCHAR(125) NOT NULL,
     year_to VARCHAR(125) NOT NULL,
     name VARCHAR(125) NOT NULL,
@@ -17,8 +17,8 @@ CREATE TABLE year_from_to (
 );
 
 CREATE TABLE musician_with_purpose (
-    id TEXT PRIMARY KEY,
-    band_id VARCHAR(255) NOT NULL,
-    musician_id VARCHAR(255) NOT NULL,
-    main_purpose VARCHAR(255) NOT NULL
+    band_id VARCHAR(255) NOT NULL REFERENCES bands(id),
+    musician_id VARCHAR(255) NOT NULL REFERENCES musicians(id),
+    main_purpose VARCHAR(255) NOT NULL,
+    PRIMARY KEY(band_id, musician_id)
 )
